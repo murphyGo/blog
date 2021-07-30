@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot' version '2.5.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.unbroken-dome.test-sets' version '4.0.0'
+    id 'io.freefair.lombok' version '5.3.3.3'
+}
+
+group 'com.github.murphygo.blog'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', '2020.0.0') // ilford
+    set('queryDSL', '5.0.0')
+    set('mockito', '3.11.2')
+}
+
+dependencies {
+    // SPRING
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-integration'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    compileOnly 'org.projectlombok:lombok'
+
+    // TEST
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockito}"
+    testImplementation "org.mockito:mockito-core:${mockito}"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+
+    failFast = true
+    maxHeapSize = '1G'
+}
